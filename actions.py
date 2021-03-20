@@ -42,6 +42,9 @@ class EscapeAction(Action):
         """
         raise SystemExit()
 
+class WaitAction(Action):
+    def perform(self) -> None:
+        pass
 
 class ActionWithDirection(Action):
     """
