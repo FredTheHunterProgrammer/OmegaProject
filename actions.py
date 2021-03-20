@@ -14,6 +14,7 @@ class Action:
     """
     Basic action class
     """
+
     def perform(self, engine: Engine, entity: Entity) -> None:
         """Perform this action with the objects needed to determine its scope.
 
@@ -30,6 +31,7 @@ class EscapeAction(Action):
     """
     Action to exit the game and close it
     """
+
     def perform(self, engine: Engine, entity: Entity) -> None:
         """
         Method to exit
@@ -40,15 +42,52 @@ class EscapeAction(Action):
         raise SystemExit()
 
 
-class MovementAction(Action):
+class ActionWithDirection(Action):
     """
-    Action that controls the character's movements
+    Choose the action to do in a given direction depending on the context
     """
+
     def __init__(self, dx: int, dy: int):
         super().__init__()
 
         self.dx = dx
         self.dy = dy
+
+    def perform(self, engine: Engine, entity: Entity) -> None:
+        """
+        Method that performs the action depending on the context
+        :param engine:
+        :param entity:
+        :return:
+        """
+        raise NotImplementedError()
+
+
+class MeleeAction(ActionWithDirection):
+    """
+    A Melee attack
+    """
+
+    def perform(self, engine: Engine, entity: Entity) -> None:
+        """
+        Method to attack an enemy
+        :param engine: Engine used
+        :param entity: Entity doing the action
+        :return: None
+        """
+        dest_x = entity.x + self.dx
+        dest_y = entity.y + self.dy
+        target = engine.game_map.get_blocking_entity_at_location(dest_x, dest_y)
+        if not target:
+            return  # no entity to attack
+
+        print(f"You kick the {target.name}, much to its annoyance!")
+
+
+class MovementAction(ActionWithDirection):
+    """
+    Action that controls the character's movements
+    """
 
     def perform(self, engine: Engine, entity: Entity) -> None:
         """
@@ -64,5 +103,27 @@ class MovementAction(Action):
             return  # Destination is out of bounds.
         if not engine.game_map.tiles["walkable"][dest_x, dest_y]:
             return  # Destination is blocked by a tile
+        if engine.game_map.get_blocking_entity_at_location(dest_x, dest_y):
+            return  # Destination is blocked by an entity
 
         entity.move(self.dx, self.dy)
+
+
+class BumpAction(ActionWithDirection):
+    """
+    Class deciding between attack or movement actions
+    """
+    def perform(self, engine: Engine, entity: Entity) -> None:
+        """
+        Method that chooses the good method between moving or attacking
+        :param engine: Engine used
+        :param entity: The creature doing the action
+        :return: None
+        """
+        dest_x = entity.x + self.dx
+        dest_y = entity.y + self.dy
+
+        if engine.game_map.get_blocking_entity_at_location(dest_x, dest_y):
+            return MeleeAction(self.dx, self.dy).perform(engine, entity)
+        else:
+            return MovementAction(self.dx, self.dy).perform(engine, entity)
