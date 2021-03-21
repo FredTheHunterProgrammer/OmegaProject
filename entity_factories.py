@@ -1,7 +1,7 @@
 """
 Creates basic entities for copying
 """
-from components.ai import HostileEnemy
+from components.ai import HostileEnemy, BaseAI
 from components.fighter import Fighter
 from entity import Actor
 
@@ -9,7 +9,7 @@ player = Actor(
     char="@",
     color=(255, 255, 255),
     name="Player",
-    ai_cls=HostileEnemy,
+    ai_cls=BaseAI,
     fighter=Fighter(hp=30, defense=2, power=5),
 )
 

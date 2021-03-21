@@ -7,6 +7,8 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING
 
+from render_order import RenderOrder
+
 if TYPE_CHECKING:
     from components.ai import BaseAI
     from components.fighter import Fighter
@@ -23,14 +25,15 @@ class Entity:
     gamemap: GameMap
 
     def __init__(
-         self,
-         gamemap: Optional[GameMap] = None,
-         x: int = 0,
-         y: int = 0,
-         char: str = "?",
-         color: Tuple[int, int, int] = (255, 255, 255),
-         name: str = "<Unnamed>",
-         blocks_movement: bool = False,
+            self,
+            gamemap: Optional[GameMap] = None,
+            x: int = 0,
+            y: int = 0,
+            char: str = "?",
+            color: Tuple[int, int, int] = (255, 255, 255),
+            name: str = "<Unnamed>",
+            blocks_movement: bool = False,
+            render_order: RenderOrder = RenderOrder.CORPSE,
     ):
         """
         Initializer for an entity
@@ -45,6 +48,7 @@ class Entity:
         self.color = color
         self.name = name
         self.blocks_movement = blocks_movement
+        self.render_order = render_order
         if gamemap:
             # If gamemap isn't provided now then it will be set later
             self.gamemap = gamemap
@@ -78,17 +82,21 @@ class Entity:
         self.x += dx
         self.y += dy
 
+
 class Actor(Entity):
+    """
+    Defines an actor's characteristics
+    """
     def __init__(
-        self,
-        *,
-        x: int = 0,
-        y: int = 0,
-        char: str = "?",
-        color: Tuple[int,int,int] = (255,255,255),
-        name: str = "<Unnamed>",
-        ai_cls: Type[BaseAI],
-        fighter: Fighter,
+            self,
+            *,
+            x: int = 0,
+            y: int = 0,
+            char: str = "?",
+            color: Tuple[int, int, int] = (255, 255, 255),
+            name: str = "<Unnamed>",
+            ai_cls: Type[BaseAI],
+            fighter: Fighter,
     ):
         super().__init__(
             x=x,
@@ -97,9 +105,15 @@ class Actor(Entity):
             color=color,
             name=name,
             blocks_movement=True,
+            render_order=RenderOrder.ACTOR
         )
 
         self.ai: Optional[BaseAI] = ai_cls(self)
 
         self.fighter = fighter
         self.fighter.entity = self
+
+    @property
+    def is_alive(self) -> bool:
+        """Returns True as long as this actor can perform actions"""
+        return bool(self.ai)

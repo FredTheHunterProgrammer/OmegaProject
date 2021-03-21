@@ -7,14 +7,15 @@ from typing import Optional, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from engine import Engine
-    from entity import Entity
+    from entity import Actor, Entity
 
 
 class Action:
     """
     Basic action class
     """
-    def __init__(self, entity: Entity) -> None:
+
+    def __init__(self, entity: Actor) -> None:
         super().__init__()
         self.entity = entity
 
@@ -36,22 +37,27 @@ class EscapeAction(Action):
     """
     Action to exit the game and close it
     """
+
     def perform(self) -> None:
         """
         Method to exit
         """
         raise SystemExit()
 
+
 class WaitAction(Action):
+    """Do nothing this turn"""
     def perform(self) -> None:
+        """Wait"""
         pass
+
 
 class ActionWithDirection(Action):
     """
     Choose the action to do in a given direction depending on the context
     """
 
-    def __init__(self, entity: Entity, dx: int, dy: int):
+    def __init__(self, entity: Actor, dx: int, dy: int):
         super().__init__(entity)
 
         self.dx = dx
@@ -67,6 +73,11 @@ class ActionWithDirection(Action):
         """Return the blocking entity at this actions destination"""
         return self.engine.game_map.get_blocking_entity_at_location(*self.dest_xy)
 
+    @property
+    def target_actor(self) -> Optional[Actor]:
+        """Return the actor at this actions destination"""
+        return self.engine.game_map.get_actor_at_location(*self.dest_xy)
+
     def perform(self) -> None:
         """
         Method that performs the action depending on the context
@@ -81,30 +92,32 @@ class MeleeAction(ActionWithDirection):
     def perform(self) -> None:
         """
         Method to attack an enemy
-        :param engine: Engine used
-        :param entity: Entity doing the action
         :return: None
         """
-        target = self.blocking_entity
+        target = self.target_actor
         if not target:
             return  # no entity to attack
 
-        print(f"You kick the {target.name}, much to its annoyance!")
+        damage = self.entity.fighter.power - target.fighter.defense
+
+        attack_desc = f"{self.entity.name.capitalize()} attacks {target.name}"
+        if damage > 0:
+            print(f"{attack_desc} for {damage} hit points")
+            target.fighter.hp -= damage
+        else:
+            print(f"{attack_desc} but does no damage")
 
 
 class MovementAction(ActionWithDirection):
     """
     Action that controls the character's movements
     """
-
     def perform(self) -> None:
         """
         Method for movement
-        :param engine: the engine used
-        :param entity: the entity moving
         :return: None
         """
-        dest_x , dest_y = self.dest_xy
+        dest_x, dest_y = self.dest_xy
 
         if not self.engine.game_map.in_bounds(dest_x, dest_y):
             return  # Destination is out of bounds.
@@ -123,11 +136,9 @@ class BumpAction(ActionWithDirection):
     def perform(self) -> None:
         """
         Method that chooses the good method between moving or attacking
-        :param engine: Engine used
-        :param entity: The creature doing the action
         :return: None
         """
-        if self.blocking_entity:
+        if self.target_actor:
             return MeleeAction(self.entity, self.dx, self.dy).perform()
         else:
             return MovementAction(self.entity, self.dx, self.dy).perform()

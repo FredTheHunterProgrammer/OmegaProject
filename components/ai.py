@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class BaseAI(Action, BaseComponent):
-    entity : Actor
+    entity: Actor
 
     def perform(self) -> None:
         raise NotImplementedError()
@@ -45,6 +45,7 @@ class BaseAI(Action, BaseComponent):
 
         # Convert from List[List[int]] to List[Tuple[int, int]]
         return [(index[0], index[1]) for index in path]
+
 
 class HostileEnemy(BaseAI):
     def __init__(self, entity: Actor):
