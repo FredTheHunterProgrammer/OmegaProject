@@ -52,21 +52,31 @@ class EventHandler(tcod.event.EventDispatch[Action]):
     def __init__(self, engine: Engine):
         self.engine = engine
 
-    def handle_events(self) -> None:
+    def handle_events(self, context: tcod.context.Context) -> None:
         """Parent"""
-        raise NotImplementedError()
+        for event in tcod.event.wait():
+            context.convert_event(event)
+            self.dispatch(event)
+
+    def ev_mousemotion(self, event: tcod.context.Context) -> None:
+        if self.egine.game_map.in_bounds(event.tile.x, event.tile.y):
+            self.engine.mouse_location = event.tile.x, event.tile.y
 
     def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
         """Quits"""
         raise SystemExit()
 
+    def on_render(self, console: tcod.Console) -> None:
+        self.engine.render(console)
+
 
 class MainGameEventHandler(EventHandler):
     """When your character is alive"""
 
-    def handle_events(self) -> None:
+    def handle_events(self, context: tcod.context.Context) -> None:
         """Live player's actions"""
         for event in tcod.event.wait():
+            context.convert_event(event)
             action = self.dispatch(event)
 
             if action is None:
@@ -99,7 +109,7 @@ class MainGameEventHandler(EventHandler):
 class GameOverEventHandler(EventHandler):
     """When your character's dead"""
 
-    def handle_events(self) -> None:
+    def handle_events(self, context: tcod.context.Context) -> None:
         """Dead player's actions"""
         for event in tcod.event.wait():
             action = self.dispatch(event)
@@ -120,3 +130,5 @@ class GameOverEventHandler(EventHandler):
 
         # No valid key was pressed
         return action
+
+CURSOR_Y_KEYSs
