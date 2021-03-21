@@ -131,4 +131,20 @@ class GameOverEventHandler(EventHandler):
         # No valid key was pressed
         return action
 
-CURSOR_Y_KEYSs
+CURSOR_Y_KEYS = {
+    tcod.event.K_UP: -1,
+    tcod.event.K_DOWN: 1,
+    tcod.event.K_PAGEUP: -10,
+    tcod.event.L_PAGEDOWN: 10,
+}
+
+class HistoryViewer(EventHandler):
+    """Print the history on a larger window which can be navigated"""
+
+    def __init__(self, engine: Engine):
+        super().__init__(engine)
+        self.log_length = len(engine.message_log.messages)
+        self.cursor = self.log_length - 1
+
+    def on_render(self, console: tcod.Console) -> None:
+        super().on_render(console) # Draw the main state as the background
