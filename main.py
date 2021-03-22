@@ -1,24 +1,16 @@
-# !/usr/bin/env python3
-"""
-Roguelike project following tutorial
-
-By FredTheHunterProgrammer
-"""
-from copy import deepcopy
+#!/usr/bin/env python3
+import copy
 import traceback
+
 import tcod
+
 import color
 from engine import Engine
 import entity_factories
-from input_handlers import EventHandler
 from procgen import generate_dungeon
 
 
-def main():
-    """
-    Main
-    :return:
-    """
+def main() -> None:
     screen_width = 80
     screen_height = 50
 
@@ -36,7 +28,7 @@ def main():
         "defaultImageFile.png", 32, 8, tcod.tileset.CHARMAP_TCOD
     )
 
-    player = deepcopy(entity_factories.player)
+    player = copy.deepcopy(entity_factories.player)
 
     engine = Engine(player=player)
 
@@ -60,8 +52,8 @@ def main():
         screen_width,
         screen_height,
         tileset=tileset,
+        title="Roguelike Tutorial",
         vsync=True,
-        title="My First Roguelike :)"
     ) as context:
         root_console = tcod.Console(screen_width, screen_height, order="F")
         while True:
@@ -73,9 +65,9 @@ def main():
                 for event in tcod.event.wait():
                     context.convert_event(event)
                     engine.event_handler.handle_events(event)
-            except:
-                traceback.print_exc()  # Print to stderr
-                # Then print to the message log
+            except Exception:  # Handle exceptions in game.
+                traceback.print_exc()  # Print error to stderr.
+                # Then print the error to the message log.
                 engine.message_log.add_message(traceback.format_exc(), color.error)
 
 

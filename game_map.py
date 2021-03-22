@@ -1,11 +1,8 @@
-"""
-Controls the game map
-"""
 from __future__ import annotations
 
 from typing import Iterable, Iterator, Optional, TYPE_CHECKING
 
-import numpy as np
+import numpy as np  # type: ignore
 from tcod.console import Console
 
 from entity import Actor, Item
@@ -17,11 +14,9 @@ if TYPE_CHECKING:
 
 
 class GameMap:
-    """
-    Class with all of the game map's functions
-    """
-
-    def __init__(self, engine: Engine, width: int, height: int, entities: Iterable[Entity] = ()):
+    def __init__(
+        self, engine: Engine, width: int, height: int, entities: Iterable[Entity] = ()
+    ):
         self.engine = engine
         self.width, self.height = width, height
         self.entities = set(entities)
@@ -40,7 +35,7 @@ class GameMap:
 
     @property
     def actors(self) -> Iterator[Actor]:
-        """Iterate over this maps living actors"""
+        """Iterate over this maps living actors."""
         yield from (
             entity
             for entity in self.entities
@@ -51,47 +46,39 @@ class GameMap:
     def items(self) -> Iterator[Item]:
         yield from (entity for entity in self.entities if isinstance(entity, Item))
 
-    def get_blocking_entity_at_location(self, location_x: int, location_y: int) -> Optional[Entity]:
-        """
-        Checks if an entity is blocking your way
-        :param location_x: Horizontal position of the enitity
-        :param location_y: Vertical position of the entity
-        :return: The blocking entity if applicable
-        """
+    def get_blocking_entity_at_location(
+        self, location_x: int, location_y: int,
+    ) -> Optional[Entity]:
         for entity in self.entities:
             if (
-                    entity.blocks_movement
-                    and entity.x == location_x
-                    and entity.y == location_y
+                entity.blocks_movement
+                and entity.x == location_x
+                and entity.y == location_y
             ):
                 return entity
+
         return None
 
     def get_actor_at_location(self, x: int, y: int) -> Optional[Actor]:
-        """Self explanatory"""
         for actor in self.actors:
             if actor.x == x and actor.y == y:
                 return actor
 
+        return None
+
     def in_bounds(self, x: int, y: int) -> bool:
-        """
-        Checks where the inside of a room would be
-        :param x: horizontal center of the room
-        :param y: Vertical center of the room
-        :return: True if the inside of a room is valid
-        """
+        """Return True if x and y are inside of the bounds of this map."""
         return 0 <= x < self.width and 0 <= y < self.height
 
     def render(self, console: Console) -> None:
         """
         Renders the map.
+
         If a tile is in the "visible" array, then draw it with the "light" colors.
-        if it isn't but it's in the "explored" array, then draw it with the "dark" colors.
+        If it isn't, but it's in the "explored" array, then draw it with the "dark" colors.
         Otherwise, the default is "SHROUD".
-        :param console: The console used for showing the game
-        :return: Nothing
         """
-        console.tiles_rgb[0: self.width, 0: self.height] = np.select(
+        console.tiles_rgb[0 : self.width, 0 : self.height] = np.select(
             condlist=[self.visible, self.explored],
             choicelist=[self.tiles["light"], self.tiles["dark"]],
             default=tile_types.SHROUD,
@@ -102,7 +89,7 @@ class GameMap:
         )
 
         for entity in entities_sorted_for_rendering:
-            # Only print entities that are in FOV
             if self.visible[entity.x, entity.y]:
                 console.print(
-                    x=entity.x, y=entity.y, string=entity.char, fg=entity.color)
+                    x=entity.x, y=entity.y, string=entity.char, fg=entity.color
+                )

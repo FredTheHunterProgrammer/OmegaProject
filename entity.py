@@ -1,11 +1,7 @@
-"""
-Generic class to represent mostly everything in the game
-"""
-
 from __future__ import annotations
 
-from copy import deepcopy
-from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING
+import copy
+from typing import Optional, Tuple, Type, TypeVar, TYPE_CHECKING, Union
 
 from render_order import RenderOrder
 
@@ -24,26 +20,19 @@ class Entity:
     A generic object to represent players, enemies, items, etc.
     """
 
-    parent: GameMap
+    parent: Union[GameMap, Inventory]
 
     def __init__(
-            self,
-            parent: Optional[GameMap] = None,
-            x: int = 0,
-            y: int = 0,
-            char: str = "?",
-            color: Tuple[int, int, int] = (255, 255, 255),
-            name: str = "<Unnamed>",
-            blocks_movement: bool = False,
-            render_order: RenderOrder = RenderOrder.CORPSE,
+        self,
+        parent: Optional[GameMap] = None,
+        x: int = 0,
+        y: int = 0,
+        char: str = "?",
+        color: Tuple[int, int, int] = (255, 255, 255),
+        name: str = "<Unnamed>",
+        blocks_movement: bool = False,
+        render_order: RenderOrder = RenderOrder.CORPSE,
     ):
-        """
-        Initializer for an entity
-        :param x: horizontal position
-        :param y: vertical position
-        :param char: character representing the entity
-        :param color: color of the entity
-        """
         self.x = x
         self.y = y
         self.char = char
@@ -52,7 +41,7 @@ class Entity:
         self.blocks_movement = blocks_movement
         self.render_order = render_order
         if parent:
-            # If gamemap isn't provided now then it will be set later
+            # If parent isn't provided now then it will be set later.
             self.parent = parent
             parent.entities.add(self)
 
@@ -61,8 +50,8 @@ class Entity:
         return self.parent.gamemap
 
     def spawn(self: T, gamemap: GameMap, x: int, y: int) -> T:
-        """Spawn a copy of this instance at the given location"""
-        clone = deepcopy(self)
+        """Spawn a copy of this instance at the given location."""
+        clone = copy.deepcopy(self)
         clone.x = x
         clone.y = y
         clone.parent = gamemap
@@ -70,42 +59,34 @@ class Entity:
         return clone
 
     def place(self, x: int, y: int, gamemap: Optional[GameMap] = None) -> None:
-        """Place this entity at the new location. Handles moving across GameMaps"""
+        """Place this entitiy at a new location.  Handles moving across GameMaps."""
         self.x = x
         self.y = y
         if gamemap:
-            if hasattr(self, "parent"):  # Possibly uninitialized
+            if hasattr(self, "parent"):  # Possibly uninitialized.
                 if self.parent is self.gamemap:
                     self.gamemap.entities.remove(self)
             self.parent = gamemap
             gamemap.entities.add(self)
 
     def move(self, dx: int, dy: int) -> None:
-        """
-        Move the entity by a given amount
-        :param dx: horizontal value to add
-        :param dy: vertical value to add
-        """
+        # Move the entity by a given amount
         self.x += dx
         self.y += dy
 
 
 class Actor(Entity):
-    """
-    Defines an actor's characteristics
-    """
-
     def __init__(
-            self,
-            *,
-            x: int = 0,
-            y: int = 0,
-            char: str = "?",
-            color: Tuple[int, int, int] = (255, 255, 255),
-            name: str = "<Unnamed>",
-            ai_cls: Type[BaseAI],
-            fighter: Fighter,
-            inventory: Inventory,
+        self,
+        *,
+        x: int = 0,
+        y: int = 0,
+        char: str = "?",
+        color: Tuple[int, int, int] = (255, 255, 255),
+        name: str = "<Unnamed>",
+        ai_cls: Type[BaseAI],
+        fighter: Fighter,
+        inventory: Inventory,
     ):
         super().__init__(
             x=x,
@@ -114,32 +95,33 @@ class Actor(Entity):
             color=color,
             name=name,
             blocks_movement=True,
-            render_order=RenderOrder.ACTOR
+            render_order=RenderOrder.ACTOR,
         )
 
         self.ai: Optional[BaseAI] = ai_cls(self)
 
         self.fighter = fighter
         self.fighter.parent = self
+
         self.inventory = inventory
         self.inventory.parent = self
 
     @property
     def is_alive(self) -> bool:
-        """Returns True as long as this actor can perform actions"""
+        """Returns True as long as this actor can perform actions."""
         return bool(self.ai)
 
 
 class Item(Entity):
     def __init__(
-            self,
-            *,
-            x: int = 0,
-            y: int = 0,
-            char: str = "?",
-            color: Tuple[int, int, int] = (255, 255, 255),
-            name: str = "<Unnamed>",
-            consumable: Consumable,
+        self,
+        *,
+        x: int = 0,
+        y: int = 0,
+        char: str = "?",
+        color: Tuple[int, int, int] = (255, 255, 255),
+        name: str = "<Unnamed>",
+        consumable: Consumable,
     ):
         super().__init__(
             x=x,
