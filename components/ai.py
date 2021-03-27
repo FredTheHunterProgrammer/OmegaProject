@@ -1,3 +1,4 @@
+"""Components relating to enemy artificial intelligence"""
 from __future__ import annotations
 
 import random
@@ -13,7 +14,9 @@ if TYPE_CHECKING:
 
 
 class BaseAI(Action):
+    """Base AI used by all other AIs"""
     def perform(self) -> None:
+        """Unused, used by other AIs"""
         raise NotImplementedError()
 
     def get_path_to(self, dest_x: int, dest_y: int) -> List[Tuple[int, int]]:
@@ -45,9 +48,11 @@ class BaseAI(Action):
         # Convert from List[List[int]] to List[Tuple[int, int]].
         return [(index[0], index[1]) for index in path]
 
+
 class ConfusedEnemy(BaseAI):
     """A confused enemy will stumble around aimlessly for a given number of turns, then revert back to its previous AI.
     If an actor occupies a tile it is randomly moving into, it will attack"""
+
     def __init__(self, entity: Actor, previous_ai: Optional[BaseAI], turns_remaining: int):
         super().__init__(entity)
 
@@ -55,7 +60,7 @@ class ConfusedEnemy(BaseAI):
         self.turns_remaining = turns_remaining
 
     def perform(self) -> None:
-        # Revert the AI back to the original state if the effect has run its course
+        """Revert the AI back to the original state if the effect has run its course"""
         if self.turns_remaining <= 0:
             self.engine.message_log.add_message(f"The {self.entity.name} is no longer confused")
             self.entity.ai = self.previous_ai
@@ -78,14 +83,17 @@ class ConfusedEnemy(BaseAI):
 
             # The actor will either try to move or attack in the chosen random direction
             # Its possible the actor will just bump into the wall, wasting a turn
-            return BumpAction(self.entity, direction_x, direction_y,).perform()
+            return BumpAction(self.entity, direction_x, direction_y, ).perform()
+
 
 class HostileEnemy(BaseAI):
+    """AI for basic enemies"""
     def __init__(self, entity: Actor):
         super().__init__(entity)
         self.path: List[Tuple[int, int]] = []
 
     def perform(self) -> None:
+        """Does what an hostile enemy does: when you see the player, move towards it and attack when in range"""
         target = self.engine.player
         dx = target.x - self.entity.x
         dy = target.y - self.entity.y

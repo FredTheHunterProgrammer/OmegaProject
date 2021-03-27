@@ -1,3 +1,9 @@
+"""File that defines all of the game's entities
+
+Entities are:
+-Actors
+-Items
+"""
 from __future__ import annotations
 
 import copy
@@ -51,6 +57,7 @@ class Entity:
 
     @property
     def gamemap(self) -> GameMap:
+        """The current map to use"""
         return self.parent.gamemap
 
     def spawn(self: T, gamemap: GameMap, x: int, y: int) -> T:
@@ -78,12 +85,13 @@ class Entity:
         return math.sqrt((x - self.x) ** 2 + (y - self.y) ** 2)
 
     def move(self, dx: int, dy: int) -> None:
-        # Move the entity by a given amount
+        """Move the entity by a given amount"""
         self.x += dx
         self.y += dy
 
 
 class Actor(Entity):
+    """Base class defining any player/enemy"""
     def __init__(
         self,
         *,
@@ -129,6 +137,7 @@ class Actor(Entity):
 
 
 class Item(Entity):
+    """Base class defining any items"""
     def __init__(
         self,
         *,

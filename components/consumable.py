@@ -1,3 +1,9 @@
+"""Component file for consumable items
+
+Consumable items include:
+- Potions
+- Scrolls
+"""
 from __future__ import annotations
 
 from typing import Optional, TYPE_CHECKING
@@ -19,6 +25,7 @@ if TYPE_CHECKING:
 
 
 class Consumable(BaseComponent):
+    """Base class for characteristics shared by all consumables"""
     parent: Item
 
     def get_action(self, consumer: Actor) -> Optional[ActionOrHandler]:
@@ -39,19 +46,22 @@ class Consumable(BaseComponent):
         if isinstance(inventory, components.inventory.Inventory):
             inventory.items.remove(entity)
 
+
 class ConfusionConsumable(Consumable):
+    """Class for a scroll that causes an enemy to be confused for x number of turns"""
     def __init__(self, number_of_turns: int):
         self.number_of_turns = number_of_turns
 
     def get_action(self, consumer: Actor) -> SingleRangedAttackHandler:
+        """Chooses the location that the action should be perforemd at"""
         self.engine.message_log.add_message("Select a target location", color.needs_target)
         return SingleRangedAttackHandler(
             self.engine,
             callback=lambda xy: actions.ItemAction(consumer, self.parent, xy),
         )
 
-
     def activate(self, action: actions.ItemAction) -> None:
+        """Activation of the scroll"""
         consumer = action.entity
         target = action.target_actor
 
@@ -71,12 +81,15 @@ class ConfusionConsumable(Consumable):
         )
         self.consume()
 
+
 class LightningDamageConsumable(Consumable):
+    """Class for a scroll that damages the nearest enemy"""
     def __init__(self, damage: int, maximum_range: int):
         self.damage = damage
         self.maximum_range = maximum_range
 
     def activate(self, action: actions.ItemAction) -> None:
+        """Activation of the scroll"""
         consumer = action.entity
         target = None
         closest_distance = self.maximum_range + 1.0
@@ -98,12 +111,15 @@ class LightningDamageConsumable(Consumable):
         else:
             raise Impossible("No enemy is close enough to strike")
 
+
 class FireballDamageConsumable(Consumable):
+    """Class for a scroll that damages everything in the selected area"""
     def __init__(self, damage: int, radius: int):
         self.damage = damage
         self.radius = radius
 
     def get_action(self, consumer: Actor) -> AreaRangedAttackHandler:
+        """Chooses the location that the action should be perforemd at"""
         self.engine.message_log.add_message("Select a target location", color.needs_target)
         return AreaRangedAttackHandler(
             self.engine,
@@ -112,6 +128,7 @@ class FireballDamageConsumable(Consumable):
         )
 
     def activate(self, action: actions.ItemAction) -> None:
+        """Activate the scroll"""
         target_xy = action.target_xy
 
         if not self.engine.game_map.visible[target_xy]:
@@ -132,10 +149,12 @@ class FireballDamageConsumable(Consumable):
 
 
 class HealingConsumable(Consumable):
+    """Class for an healing potion"""
     def __init__(self, amount: int):
         self.amount = amount
 
     def activate(self, action: actions.ItemAction) -> None:
+        """Activation of the potion"""
         consumer = action.entity
         amount_recovered = consumer.fighter.heal(self.amount)
 
@@ -147,5 +166,3 @@ class HealingConsumable(Consumable):
             self.consume()
         else:
             raise Impossible(f"Your health is already full.")
-
-

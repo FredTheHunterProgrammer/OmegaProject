@@ -13,11 +13,9 @@ from engine import Engine
 import entity_factories
 from game_map import GameWorld
 import input_handlers
-from procgen import generate_dungeon
-
 
 # Load the background image and remove the alpha channel
-background_image = tcod.image.load("menu_background.png")[:,:,:3]
+background_image = tcod.image.load("menu_background.png")[:, :, :3]
 
 
 def new_game() -> Engine:
@@ -63,12 +61,14 @@ def new_game() -> Engine:
 
     return engine
 
+
 def load_game(filename: str) -> Engine:
     """Load an Engine instance from a file"""
     with open(filename, "rb") as f:
         engine = pickle.loads(lzma.decompress(f.read()))
     assert isinstance(engine, Engine)
     return engine
+
 
 class MainMenu(input_handlers.BaseEventHandler):
     """Handle the main menu rendering and input"""
@@ -94,7 +94,7 @@ class MainMenu(input_handlers.BaseEventHandler):
 
         menu_width = 24
         for i, text in enumerate(
-            ["[N] Play a new game", "[C] Continue last game", "[Q] Quit"]
+                ["[N] Play a new game", "[C] Continue last game", "[Q] Quit"]
         ):
             console.print(
                 console.width // 2,
@@ -109,6 +109,7 @@ class MainMenu(input_handlers.BaseEventHandler):
     def ev_keydown(
             self, event: tcod.event.KeyDown
     ) -> Optional[input_handlers.BaseEventHandler]:
+        """Handles input on the main menu"""
         if event.sym in (tcod.event.K_q, tcod.event.K_ESCAPE):
             raise SystemExit()
         elif event.sym == tcod.event.K_c:
@@ -118,7 +119,7 @@ class MainMenu(input_handlers.BaseEventHandler):
                 return input_handlers.PopupMessage(self, "No saved game to load")
             except Exception as exc:
                 traceback.print_exc()  # Print to stderr
-                return input_handlers.Popupmessage(self, f"Failed to load save:\n{exc}")
+                return input_handlers.PopupMessage(self, f"Failed to load save:\n{exc}")
         elif event.sym == tcod.event.K_n:
             return input_handlers.MainGameEventHandler(new_game())
 

@@ -1,3 +1,4 @@
+"""Functions that handle rendering"""
 from __future__ import annotations
 
 from typing import Tuple, TYPE_CHECKING
@@ -11,6 +12,7 @@ if TYPE_CHECKING:
 
 
 def get_names_at_location(x: int, y: int, game_map: GameMap) -> str:
+    """Gets the name of entities on the pointed/chosen tile"""
     if not game_map.in_bounds(x, y) or not game_map.visible[x, y]:
         return ""
 
@@ -22,8 +24,9 @@ def get_names_at_location(x: int, y: int, game_map: GameMap) -> str:
 
 
 def render_bar(
-    console: Console, current_value: int, maximum_value: int, total_width: int
+        console: Console, current_value: int, maximum_value: int, total_width: int
 ) -> None:
+    """Appearance of the health bar"""
     bar_width = int(float(current_value) / maximum_value * total_width)
 
     console.draw_rect(x=0, y=45, width=20, height=1, ch=1, bg=color.bar_empty)
@@ -37,6 +40,7 @@ def render_bar(
         x=1, y=45, string=f"HP: {current_value}/{maximum_value}", fg=color.bar_text
     )
 
+
 def render_dungeon_level(
         console: Console, dungeon_level: int, location: Tuple[int, int]
 ) -> None:
@@ -46,8 +50,9 @@ def render_dungeon_level(
 
 
 def render_names_at_mouse_location(
-    console: Console, x: int, y: int, engine: Engine
+        console: Console, x: int, y: int, engine: Engine
 ) -> None:
+    """Shows the name of entities on the pointed/chosen tile"""
     mouse_x, mouse_y = engine.mouse_location
 
     names_at_mouse_location = get_names_at_location(

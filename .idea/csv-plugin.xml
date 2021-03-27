@@ -31,6 +31,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\equipment_types.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\game_map.py">
           <value>
             <Attribute>

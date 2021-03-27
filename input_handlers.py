@@ -1,3 +1,4 @@
+"""Manages the player's input"""
 from __future__ import annotations
 
 import os
@@ -69,6 +70,7 @@ MainGameEventHandler will become the active handler"""
 
 
 class BaseEventHandler(tcod.event.EventDispatch[ActionOrHandler]):
+    """Base class for event handlers"""
     def handle_events(self, event: tcod.event.Event) -> BaseEventHandler:
         """Handle an event and return the next active event handler"""
         state = self.dispatch(event)
@@ -78,13 +80,16 @@ class BaseEventHandler(tcod.event.EventDispatch[ActionOrHandler]):
         return self
 
     def on_render(self, console: tcod.Console) -> None:
+        """Used by other event handlers"""
         raise NotImplementedError()
 
     def ev_quit(self, event: tcod.event.Quit) -> Optional[Action]:
+        """Quits the game"""
         raise SystemExit()
 
 
 class EventHandler(BaseEventHandler):
+    """Controls the behavior of the game depending on the command entered"""
     def __init__(self, engine: Engine):
         self.engine = engine
 
@@ -123,10 +128,12 @@ class EventHandler(BaseEventHandler):
         return True
 
     def ev_mousemotion(self, event: tcod.event.MouseMotion) -> None:
+        """Enables detection of the mouse's position on the screen"""
         if self.engine.game_map.in_bounds(event.tile.x, event.tile.y):
             self.engine.mouse_location = event.tile.x, event.tile.y
 
     def on_render(self, console: tcod.Console) -> None:
+        """Renders the console"""
         self.engine.render(console)
 
 
@@ -159,9 +166,11 @@ class AskUserEventHandler(EventHandler):
 
 
 class CharacterScreenEventHandler(AskUserEventHandler):
+    """Class for the screen showing a character's informations"""
     TITLE = "Character Information"
 
     def on_render(self, console: tcod.Console) -> None:
+        """Renders the character info screen at the given location"""
         super().on_render(console)
 
         if self.engine.player.x <= 30:
@@ -194,9 +203,11 @@ class CharacterScreenEventHandler(AskUserEventHandler):
 
 
 class LevelUpEventHandler(AskUserEventHandler):
+    """Class for the screen showing when a character levels up"""
     TITLE = "Level Up"
 
     def on_render(self, console: tcod.Console) -> None:
+        """Renders the character's level up screen at the given location"""
         super().on_render(console)
 
         if self.engine.player.x <= 30:
@@ -235,6 +246,7 @@ class LevelUpEventHandler(AskUserEventHandler):
         )
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
+        """Handles the choice of stat to upgrade at level up"""
         player = self.engine.player
         key = event.sym
         index = key - tcod.event.K_a
@@ -247,7 +259,7 @@ class LevelUpEventHandler(AskUserEventHandler):
             else:
                 player.level.increase_defense()
         else:
-            self.egine.message_log.add_message("Invalid entry", color.invalid)
+            self.engine.message_log.add_message("Invalid entry", color.invalid)
 
             return None
 
@@ -313,6 +325,7 @@ class InventoryEventHandler(AskUserEventHandler):
             console.print(x + 1, y + 1, "(Empty)")
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
+        """Checks if the input is valid"""
         player = self.engine.player
         key = event.sym
         index = key - tcod.event.K_a
@@ -432,11 +445,14 @@ class SingleRangedAttackHandler(SelectIndexHandler):
         self.callback = callback
 
     def on_index_selected(self, x: int, y: int) -> Optional[Action]:
+        """Returns the target's location"""
         return self.callback((x, y))
 
 
 class MainGameEventHandler(EventHandler):
+    """Manages the main gameplay's events"""
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
+        """Keys used for player inputs"""
         action: Optional[Action] = None
 
         key = event.sym
@@ -507,10 +523,12 @@ class AreaRangedAttackHandler(SelectIndexHandler):
         )
 
     def on_index_selected(self, x: int, y: int) -> Optional[Action]:
+        """The targeted location"""
         return self.callback((x, y))
 
 
 class GameOverEventHandler(EventHandler):
+    """Manages what happens after a character is dead"""
     def on_quit(self) -> None:
         """Handle exiting out of a finished game"""
         if os.path.exists("savegame.sav"):
@@ -518,9 +536,11 @@ class GameOverEventHandler(EventHandler):
         raise exceptions.QuitWithoutSaving()  # Avoid saving a finished game
 
     def ev_quit(self, event: tcod.event.Quit) -> None:
+        """Quitting"""
         self.on_quit()
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> None:
+        """Quitting can be done with the escape key"""
         if event.sym == tcod.event.K_ESCAPE:
             raise SystemExit()
 
@@ -542,6 +562,7 @@ class HistoryViewer(EventHandler):
         self.cursor = self.log_length - 1
 
     def on_render(self, console: tcod.Console) -> None:
+        """Renders the history viewer"""
         super().on_render(console)  # Draw the main state as the background.
 
         log_console = tcod.Console(console.width - 6, console.height - 6)
@@ -564,6 +585,7 @@ class HistoryViewer(EventHandler):
         log_console.blit(console, 3, 3)
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[MainGameEventHandler]:
+        """Controls in the history viewer"""
         # Fancy conditional movement to make it feel right.
         if event.sym in CURSOR_Y_KEYS:
             adjust = CURSOR_Y_KEYS[event.sym]

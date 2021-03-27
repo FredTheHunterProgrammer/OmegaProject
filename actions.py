@@ -1,3 +1,4 @@
+"""File defining any actions an entity can make"""
 from __future__ import annotations
 
 from typing import Optional, Tuple, TYPE_CHECKING
@@ -11,6 +12,7 @@ if TYPE_CHECKING:
 
 
 class Action:
+    """Base class of an action"""
     def __init__(self, entity: Actor) -> None:
         super().__init__()
         self.entity = entity
@@ -39,6 +41,7 @@ class PickupAction(Action):
         super().__init__(entity)
 
     def perform(self) -> None:
+        """Pickup the item at your location, if possible"""
         actor_location_x = self.entity.x
         actor_location_y = self.entity.y
         inventory = self.entity.inventory
@@ -59,6 +62,7 @@ class PickupAction(Action):
 
 
 class ItemAction(Action):
+    """Class for actions done using an item"""
     def __init__(
             self, entity: Actor, item: Item, target_xy: Optional[Tuple[int, int]] = None
     ):
@@ -80,27 +84,34 @@ class ItemAction(Action):
 
 
 class DropItem(ItemAction):
+    """Class for the action of leaving an item in your inventory at your current position"""
     def perform(self) -> None:
+        """Drop the chosen item"""
         if self.entity.equipment.item_is_equipped(self.item):
             self.entity.equipment.toggle_equip(self.item)
         self.entity.inventory.drop(self.item)
 
 
 class EquipAction(Action):
+    """Class for the action of equipping an item"""
     def __init__(self, entity: Actor, item: Item):
         super().__init__(entity)
         self.item = item
 
     def perform(self) -> None:
+        """Equip an item and benefit from its usefulness"""
         self.entity.equipment.toggle_equip(self.item)
 
 
 class WaitAction(Action):
+    """Class for doing nothing"""
     def perform(self) -> None:
+        """Wait a turn"""
         pass
 
 
 class TakeStairsAction(Action):
+    """Class for moving between levels of the dungeon"""
     def perform(self) -> None:
         """Take the stairs, if any exist at the entity's location"""
         if (self.entity.x, self.entity.y) == self.engine.game_map.downstairs_location:
@@ -113,6 +124,7 @@ class TakeStairsAction(Action):
 
 
 class ActionWithDirection(Action):
+    """Base class for any action that requires you input a direction to do it"""
     def __init__(self, entity: Actor, dx: int, dy: int):
         super().__init__(entity)
 
@@ -135,11 +147,14 @@ class ActionWithDirection(Action):
         return self.engine.game_map.get_actor_at_location(*self.dest_xy)
 
     def perform(self) -> None:
+        """Does nothing, used by child classes"""
         raise NotImplementedError()
 
 
 class MeleeAction(ActionWithDirection):
+    """Class for attacking another entity"""
     def perform(self) -> None:
+        """Attack the foe in your way"""
         target = self.target_actor
         if not target:
             raise exceptions.Impossible("Nothing to attack.")
@@ -164,7 +179,9 @@ class MeleeAction(ActionWithDirection):
 
 
 class MovementAction(ActionWithDirection):
+    """Action for moving in a given direction"""
     def perform(self) -> None:
+        """Move in the given direction"""
         dest_x, dest_y = self.dest_xy
 
         if not self.engine.game_map.in_bounds(dest_x, dest_y):
@@ -181,7 +198,9 @@ class MovementAction(ActionWithDirection):
 
 
 class BumpAction(ActionWithDirection):
+    """Class that checks wether your action should be an attack or a movement"""
     def perform(self) -> None:
+        """Attack/move depending if an enemy is in your way or not"""
         if self.target_actor:
             return MeleeAction(self.entity, self.dx, self.dy).perform()
 

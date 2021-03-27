@@ -1,3 +1,4 @@
+"""File where all unique creatures and items are stored"""
 from components.ai import HostileEnemy
 from components import consumable, equippable
 from components.fighter import Fighter

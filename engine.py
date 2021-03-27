@@ -1,3 +1,4 @@
+"""Defines the game's engine and functions"""
 from __future__ import annotations
 
 import lzma
@@ -17,6 +18,7 @@ if TYPE_CHECKING:
 
 
 class Engine:
+    """The base class of the game's engine"""
     game_map: GameMap
     game_world: GameWorld
 
@@ -26,6 +28,7 @@ class Engine:
         self.player = player
 
     def handle_enemy_turns(self) -> None:
+        """Make every enemy take a turn"""
         for entity in set(self.game_map.actors) - {self.player}:
             if entity.ai:
                 try:
@@ -44,6 +47,7 @@ class Engine:
         self.game_map.explored |= self.game_map.visible
 
     def render(self, console: Console) -> None:
+        """Renders game information on the screen"""
         self.game_map.render(console)
 
         self.message_log.render(console=console, x=21, y=45, width=40, height=5)

@@ -1,3 +1,4 @@
+"""File controlling the message log"""
 from typing import Iterable, List, Reversible, Tuple
 import textwrap
 
@@ -7,6 +8,7 @@ import color
 
 
 class Message:
+    """Base class of a message in the log"""
     def __init__(self, text: str, fg: Tuple[int, int, int]):
         self.plain_text = text
         self.fg = fg
@@ -21,6 +23,7 @@ class Message:
 
 
 class MessageLog:
+    """Base class of the log containing the messages"""
     def __init__(self) -> None:
         self.messages: List[Message] = []
 

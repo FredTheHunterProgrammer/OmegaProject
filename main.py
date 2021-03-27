@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""The main file of the project, where the game starts"""
 import traceback
 
 import tcod
@@ -10,13 +11,16 @@ import input_handlers
 
 import setup_game
 
+
 def save_game(handler: input_handlers.BaseEventHandler, filename: str) -> None:
     """If the current event handler has an active Engine then save it"""
     if isinstance(handler, input_handlers.EventHandler):
         handler.engine.save_as(filename)
         print("Game saved!")
 
+
 def main() -> None:
+    """Main function of the game"""
     screen_width = 80
     screen_height = 50
 
@@ -27,11 +31,11 @@ def main() -> None:
     handler: input_handlers.BaseEventHandler = setup_game.MainMenu()
 
     with tcod.context.new_terminal(
-        screen_width,
-        screen_height,
-        tileset=tileset,
-        title="Roguelike Tutorial",
-        vsync=True,
+            screen_width,
+            screen_height,
+            tileset=tileset,
+            title="Roguelike Tutorial",
+            vsync=True,
     ) as context:
         root_console = tcod.Console(screen_width, screen_height, order="F")
         try:
@@ -59,7 +63,6 @@ def main() -> None:
         except BaseException:  # Save on any other unexpected exception
             save_game(handler, "savegame.sav")
             raise
-
 
 
 if __name__ == "__main__":

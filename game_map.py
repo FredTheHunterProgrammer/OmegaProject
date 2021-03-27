@@ -1,3 +1,4 @@
+"""File defining a gamemap's characteristics"""
 from __future__ import annotations
 
 from typing import Iterable, Iterator, Optional, TYPE_CHECKING
@@ -14,8 +15,9 @@ if TYPE_CHECKING:
 
 
 class GameMap:
+    """Basic gamemap class"""
     def __init__(
-        self, engine: Engine, width: int, height: int, entities: Iterable[Entity] = ()
+            self, engine: Engine, width: int, height: int, entities: Iterable[Entity] = ()
     ):
         self.engine = engine
         self.width, self.height = width, height
@@ -32,6 +34,7 @@ class GameMap:
 
     @property
     def gamemap(self) -> GameMap:
+        """Instance of a gamemap"""
         return self
 
     @property
@@ -45,22 +48,25 @@ class GameMap:
 
     @property
     def items(self) -> Iterator[Item]:
+        """Items in the gamemap"""
         yield from (entity for entity in self.entities if isinstance(entity, Item))
 
     def get_blocking_entity_at_location(
-        self, location_x: int, location_y: int,
+            self, location_x: int, location_y: int,
     ) -> Optional[Entity]:
+        """Check if an entity is blocking movement or not, and returns it if applicable"""
         for entity in self.entities:
             if (
-                entity.blocks_movement
-                and entity.x == location_x
-                and entity.y == location_y
+                    entity.blocks_movement
+                    and entity.x == location_x
+                    and entity.y == location_y
             ):
                 return entity
 
         return None
 
     def get_actor_at_location(self, x: int, y: int) -> Optional[Actor]:
+        """Gives the location of an actor if applicable"""
         for actor in self.actors:
             if actor.x == x and actor.y == y:
                 return actor
@@ -79,7 +85,7 @@ class GameMap:
         If it isn't, but it's in the "explored" array, then draw it with the "dark" colors.
         Otherwise, the default is "SHROUD".
         """
-        console.tiles_rgb[0 : self.width, 0 : self.height] = np.select(
+        console.tiles_rgb[0: self.width, 0: self.height] = np.select(
             condlist=[self.visible, self.explored],
             choicelist=[self.tiles["light"], self.tiles["dark"]],
             default=tile_types.SHROUD,
@@ -95,20 +101,21 @@ class GameMap:
                     x=entity.x, y=entity.y, string=entity.char, fg=entity.color
                 )
 
+
 class GameWorld:
     """Holds the settings for the GameMap,
     and generates new maps when moving down the stairs"""
 
     def __init__(
-        self,
-        *,
-        engine: Engine,
-        map_width: int,
-        map_height: int,
-        max_rooms: int,
-        room_min_size: int,
-        room_max_size: int,
-        current_floor: int = 0,
+            self,
+            *,
+            engine: Engine,
+            map_width: int,
+            map_height: int,
+            max_rooms: int,
+            room_min_size: int,
+            room_max_size: int,
+            current_floor: int = 0,
     ):
         self.engine = engine
         self.map_width = map_width
@@ -119,6 +126,7 @@ class GameWorld:
         self.current_floor = current_floor
 
     def generate_floor(self) -> None:
+        """Creates a floor of the dungeon"""
         from procgen import generate_dungeon
         self.current_floor += 1
 

@@ -1,3 +1,4 @@
+"""File defining a fighting entity's characteristics/stats"""
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -11,6 +12,7 @@ if TYPE_CHECKING:
 
 
 class Fighter(BaseComponent):
+    """Base fighter class"""
     parent: Actor
 
     def __init__(self, hp: int, base_defense: int, base_power: int):
@@ -21,6 +23,7 @@ class Fighter(BaseComponent):
 
     @property
     def hp(self) -> int:
+        """Character's health"""
         return self._hp
 
     @hp.setter
@@ -31,14 +34,17 @@ class Fighter(BaseComponent):
 
     @property
     def defense(self) -> int:
+        """Character's defense"""
         return self.base_defense + self.defense_bonus
 
     @property
     def power(self) -> int:
+        """Character's power"""
         return self.base_power + self.power_bonus
 
     @property
     def defense_bonus(self) -> int:
+        """Character's bonus defense given by equipment"""
         if self.parent.equipment:
             return self.parent.equipment.defense_bonus
         else:
@@ -46,12 +52,16 @@ class Fighter(BaseComponent):
 
     @property
     def power_bonus(self) -> int:
+        """Character's bonus power given by equipment"""
         if self.parent.equipment:
             return self.parent.equipment.power_bonus
         else:
             return 0
 
     def die(self) -> None:
+        """Handles a character's death.
+        If player, end game;
+        if enemy, continue."""
         if self.engine.player is self.parent:
             death_message = "You died!"
             death_message_color = color.player_die
@@ -71,6 +81,7 @@ class Fighter(BaseComponent):
         self.engine.player.level.add_xp(self.parent.level.xp_given)
 
     def heal(self, amount: int) -> int:
+        """Handles healing of a character"""
         if self.hp == self.max_hp:
             return 0
 
@@ -86,4 +97,5 @@ class Fighter(BaseComponent):
         return amount_recovered
 
     def take_damage(self, amount: int) -> None:
+        """Handles a character taking damage"""
         self.hp -= amount

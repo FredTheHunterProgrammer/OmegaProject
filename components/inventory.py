@@ -1,3 +1,4 @@
+"""Component file handling an entity's inventory"""
 from __future__ import annotations
 
 from typing import List, TYPE_CHECKING
@@ -9,6 +10,7 @@ if TYPE_CHECKING:
 
 
 class Inventory(BaseComponent):
+    """Base class of an entity's inventory"""
     parent: Actor
 
     def __init__(self, capacity: int):

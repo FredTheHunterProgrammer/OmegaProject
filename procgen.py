@@ -1,3 +1,4 @@
+"""Handles randomness in the game"""
 from __future__ import annotations
 
 import random
@@ -8,7 +9,6 @@ import tcod
 import entity_factories
 from game_map import GameMap
 import tile_types
-
 
 if TYPE_CHECKING:
     from engine import Engine
@@ -43,6 +43,7 @@ enemy_chances: Dict[int, List[Tuple[Entity, int]]] = {
 def get_max_value_for_floor(
         max_value_by_floor: List[Tuple[int, int]], floor: int
 ) -> int:
+    """Maximum values for random generation, based on the floor you are on"""
     current_value = 0
 
     for floor_minimum, value in max_value_by_floor:
@@ -59,6 +60,7 @@ def get_entities_at_random(
         number_of_entities: int,
         floor: int,
 ) -> List[Entity]:
+    """Random chance for entity spawning on the map"""
     entity_weighted_chances = {}
 
     for key, values in weighted_chances_by_floor.items():
@@ -80,7 +82,9 @@ def get_entities_at_random(
 
     return chosen_entities
 
+
 class RectangularRoom:
+    """Base class for a room"""
     def __init__(self, x: int, y: int, width: int, height: int):
         self.x1 = x
         self.y1 = y
@@ -89,6 +93,7 @@ class RectangularRoom:
 
     @property
     def center(self) -> Tuple[int, int]:
+        """Center of the room"""
         center_x = int((self.x1 + self.x2) / 2)
         center_y = int((self.y1 + self.y2) / 2)
 
@@ -102,16 +107,17 @@ class RectangularRoom:
     def intersects(self, other: RectangularRoom) -> bool:
         """Return True if this room overlaps with another RectangularRoom."""
         return (
-            self.x1 <= other.x2
-            and self.x2 >= other.x1
-            and self.y1 <= other.y2
-            and self.y2 >= other.y1
+                self.x1 <= other.x2
+                and self.x2 >= other.x1
+                and self.y1 <= other.y2
+                and self.y2 >= other.y1
         )
 
 
 def place_entities(
-    room: RectangularRoom, dungeon: GameMap, floor_number: int
+        room: RectangularRoom, dungeon: GameMap, floor_number: int
 ) -> None:
+    """Spawn entities in rooms"""
     number_of_monsters = random.randint(0, get_max_value_for_floor(max_monsters_by_floor, floor_number))
     number_of_items = random.randint(0, get_max_value_for_floor(max_items_by_floor, floor_number))
 
@@ -127,7 +133,7 @@ def place_entities(
 
 
 def tunnel_between(
-    start: Tuple[int, int], end: Tuple[int, int]
+        start: Tuple[int, int], end: Tuple[int, int]
 ) -> Iterator[Tuple[int, int]]:
     """Return an L-shaped tunnel between these two points."""
     x1, y1 = start
@@ -147,12 +153,12 @@ def tunnel_between(
 
 
 def generate_dungeon(
-    max_rooms: int,
-    room_min_size: int,
-    room_max_size: int,
-    map_width: int,
-    map_height: int,
-    engine: Engine,
+        max_rooms: int,
+        room_min_size: int,
+        room_max_size: int,
+        map_width: int,
+        map_height: int,
+        engine: Engine,
 ) -> GameMap:
     """Generate a new dungeon map."""
     player = engine.player

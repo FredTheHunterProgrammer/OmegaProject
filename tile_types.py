@@ -1,3 +1,4 @@
+"""File defining tiles found in the game"""
 from typing import Tuple
 import numpy as np
 
@@ -26,6 +27,7 @@ def new_tile(
         dark: Tuple[int, Tuple[int, int, int], Tuple[int, int, int]],
         light: Tuple[int, Tuple[int, int, int], Tuple[int, int, int]],
 ) -> np.ndarray:
+    """Returns the characteristic of hte desired tile"""
     return np.array((walkable, transparent, dark, light), dtype=tile_dt)
 
 
@@ -50,5 +52,5 @@ down_stairs = new_tile(
     walkable=True,
     transparent=True,
     dark=(ord(">"), (0, 0, 100), (50, 50, 150)),
-    light=(ord(">"), (255,255,255), (200, 180, 50)),
+    light=(ord(">"), (255, 255, 255), (200, 180, 50)),
 )

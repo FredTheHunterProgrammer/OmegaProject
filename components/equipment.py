@@ -1,3 +1,10 @@
+"""Component file for equipment
+
+Equipments include:
+
+-Weapons
+-Armors
+"""
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 from components.base_component import BaseComponent
@@ -8,6 +15,7 @@ if TYPE_CHECKING:
 
 
 class Equipment(BaseComponent):
+    """Base class for equipments"""
     parent: Actor
 
     def __init__(self, weapon: Optional[Item] = None, armor: Optional[Item] = None):
@@ -16,6 +24,7 @@ class Equipment(BaseComponent):
 
     @property
     def defense_bonus(self) -> int:
+        """Defense bonus given by the equipped item"""
         bonus = 0
 
         if self.weapon is not None and self.weapon.equippable is not None:
@@ -28,6 +37,7 @@ class Equipment(BaseComponent):
 
     @property
     def power_bonus(self) -> int:
+        """Attack bonus given by the equipped item"""
         bonus = 0
 
         if self.weapon is not None and self.weapon.equippable is not None:
@@ -39,19 +49,23 @@ class Equipment(BaseComponent):
         return bonus
 
     def item_is_equipped(self, item: Item) -> bool:
+        """Returns if the item is equipped or not"""
         return self.weapon == item or self.armor == item
 
     def unequip_message(self, item_name: str) -> None:
+        """Message to show when you remove an item"""
         self.parent.gamemap.engine.message_log.add_message(
             f"You remove the {item_name}"
         )
 
     def equip_message(self, item_name: str) -> None:
+        """Message to show when you equip an item"""
         self.parent.gamemap.engine.message_log.add_message(
             f"You equip the {item_name}"
         )
 
     def equip_to_slot(self, slot: str, item: Item, add_message: bool) -> None:
+        """Handles the equipping of an item in the right slot"""
         current_item = getattr(self, slot)
 
         if current_item is not None:
@@ -63,6 +77,7 @@ class Equipment(BaseComponent):
             self.equip_message(item.name)
 
     def unequip_from_slot(self, slot: str, add_message: bool) -> None:
+        """Handles the unequipping of an item in the right slot"""
         current_item = getattr(self, slot)
 
         if add_message:
@@ -71,9 +86,10 @@ class Equipment(BaseComponent):
         setattr(self, slot, None)
 
     def toggle_equip(self, equippable_item: Item, add_message: bool = True) -> None:
-        if(
-            equippable_item.equippable
-            and equippable_item.equippable.equipment_type == EquipmentType.WEAPON
+        """Toggles the equipped/unequipped status of the chosen item"""
+        if (
+                equippable_item.equippable
+                and equippable_item.equippable.equipment_type == EquipmentType.WEAPON
         ):
             slot = "weapon"
         else:
