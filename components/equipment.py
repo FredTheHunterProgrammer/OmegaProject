@@ -55,7 +55,7 @@ class Equipment(BaseComponent):
         current_item = getattr(self, slot)
 
         if current_item is not None:
-            self.unequip_message(slot, add_message)
+            self.unequip_message(slot)
 
         setattr(self, slot, item)
 
