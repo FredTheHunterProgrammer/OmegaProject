@@ -196,14 +196,13 @@ class CharacterScreenEventHandler(AskUserEventHandler):
         )
 
         console.print(x=x + 1, y=y + 1, string=f"Level: {self.engine.player.level.current_level}")
-        console.print(x=x + 1, y=y + 2, string=f"XP: {self.engine.player.level.current_xp}")
-        console.print(x=x + 1, y=y + 3,
-                      string=f"XP for next Level: {self.engine.player.level.experience_to_next_level}"
-                      )
+        console.print(x=x + 1, y=y + 2, string=f"XP: {self.engine.player.level.current_xp} / "
+                                               f"{self.engine.player.level.experience_to_next_level}")
         console.print(x=x + 1, y=y + 4, string=f"Strength: {self.engine.player.fighter.strength}")
         console.print(x=x + 1, y=y + 5, string=f"Constitution: {self.engine.player.fighter.constitution}")
-        console.print(x=x + 1, y=y + 6, string=f"Intelligence: {self.engine.player.fighter.intelligence}")
-        console.print(x=x + 1, y=y + 7, string=f"Agility: {self.engine.player.fighter.agility}")
+        console.print(x=x + 1, y=y + 6, string=f"Agility: {self.engine.player.fighter.agility}")
+        console.print(x=x + 1, y=y + 7, string=f"Intelligence: {self.engine.player.fighter.intelligence}")
+
 
 
 class LevelUpEventHandler(AskUserEventHandler):
@@ -215,14 +214,14 @@ class LevelUpEventHandler(AskUserEventHandler):
         super().on_render(console)
 
         if self.engine.player.x <= 30:
-            x = 31
+            x = 40
         else:
             x = 0
 
         console.draw_frame(
             x=x,
             y=0,
-            width=45,
+            width=35,
             height=10,
             title=self.TITLE,
             clear=True,
