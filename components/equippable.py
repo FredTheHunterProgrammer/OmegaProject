@@ -29,25 +29,25 @@ class Dagger(Equippable):
     """Characteristics of an instance of a DAGGER weapon"""
 
     def __init__(self) -> None:
-        super().__init__(equipment_type=EquipmentType.WEAPON, power_bonus=2)
+        super().__init__(equipment_type=EquipmentType.LEFT_HAND, power_bonus=2)
 
 
 class Sword(Equippable):
     """Characteristics of an instance of a SWORD weapon"""
 
     def __init__(self) -> None:
-        super().__init__(equipment_type=EquipmentType.WEAPON, power_bonus=4)
+        super().__init__(equipment_type=EquipmentType.RIGHT_HAND, power_bonus=4)
 
 
 class LeatherArmor(Equippable):
     """Characteristics of an instance of a LEATHER ARMOR"""
 
     def __init__(self) -> None:
-        super().__init__(equipment_type=EquipmentType.WEAPON, defense_bonus=1)
+        super().__init__(equipment_type=EquipmentType.BODY_ARMOR, defense_bonus=1)
 
 
 class ChainMail(Equippable):
     """Characteristics of an instance of a CHAIN MAIL ARMOR"""
 
     def __init__(self) -> None:
-        super().__init__(equipment_type=EquipmentType.WEAPON, defense_bonus=3)
+        super().__init__(equipment_type=EquipmentType.BODY_ARMOR, defense_bonus=3)
