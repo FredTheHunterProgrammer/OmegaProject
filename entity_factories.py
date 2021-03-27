@@ -30,7 +30,7 @@ slime = Actor(
     equipment=Equipment(),
     fighter=Fighter(hp=10, base_constitution=0, base_strength=3, base_agility=2, base_intelligence=1),
     inventory=Inventory(capacity=0),
-    level=Level(xp_given=35)
+    level=Level(xp_given=355)
 )
 
 """Consumables"""

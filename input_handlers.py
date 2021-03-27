@@ -71,6 +71,7 @@ MainGameEventHandler will become the active handler"""
 
 class BaseEventHandler(tcod.event.EventDispatch[ActionOrHandler]):
     """Base class for event handlers"""
+
     def handle_events(self, event: tcod.event.Event) -> BaseEventHandler:
         """Handle an event and return the next active event handler"""
         state = self.dispatch(event)
@@ -90,6 +91,7 @@ class BaseEventHandler(tcod.event.EventDispatch[ActionOrHandler]):
 
 class EventHandler(BaseEventHandler):
     """Controls the behavior of the game depending on the command entered"""
+
     def __init__(self, engine: Engine):
         self.engine = engine
 
@@ -186,7 +188,7 @@ class CharacterScreenEventHandler(AskUserEventHandler):
             x=x,
             y=y,
             width=width,
-            height=7,
+            height=9,
             title=self.TITLE,
             clear=True,
             fg=(255, 255, 255),
@@ -198,10 +200,10 @@ class CharacterScreenEventHandler(AskUserEventHandler):
         console.print(x=x + 1, y=y + 3,
                       string=f"XP for next Level: {self.engine.player.level.experience_to_next_level}"
                       )
-        console.print(x=x + 1, y=y + 4, string=f"Attack: {self.engine.player.fighter.strength}")
-        console.print(x=x + 1, y=y + 5, string=f"Defense: {self.engine.player.fighter.defense}")
-        console.print(x=x + 1, y=y + 5, string=f"Intelligence: {self.engine.player.fighter.intelligence}")
-        console.print(x=x + 1, y=y + 5, string=f"Agility: {self.engine.player.fighter.agility}")
+        console.print(x=x + 1, y=y + 4, string=f"Strength: {self.engine.player.fighter.strength}")
+        console.print(x=x + 1, y=y + 5, string=f"Constitution: {self.engine.player.fighter.constitution}")
+        console.print(x=x + 1, y=y + 6, string=f"Intelligence: {self.engine.player.fighter.intelligence}")
+        console.print(x=x + 1, y=y + 7, string=f"Agility: {self.engine.player.fighter.agility}")
 
 
 class LevelUpEventHandler(AskUserEventHandler):
@@ -213,15 +215,15 @@ class LevelUpEventHandler(AskUserEventHandler):
         super().on_render(console)
 
         if self.engine.player.x <= 30:
-            x = 40
+            x = 31
         else:
             x = 0
 
         console.draw_frame(
             x=x,
             y=0,
-            width=35,
-            height=8,
+            width=45,
+            height=10,
             title=self.TITLE,
             clear=True,
             fg=(255, 255, 255),
@@ -233,17 +235,32 @@ class LevelUpEventHandler(AskUserEventHandler):
         console.print(
             x=x + 1,
             y=4,
-            string=f"a) Constitution (+20 HP, from {self.engine.player.fighter.max_hp})"
+            string=f"a) HP ({self.engine.player.fighter.max_hp} > "
+                   f"{self.engine.player.fighter.max_hp + 20})"
         )
         console.print(
             x=x + 1,
             y=5,
-            string=f"b) Strength (+1 attack, from {self.engine.player.fighter.max_hp})"
+            string=f"b) Strength ({self.engine.player.fighter.strength} > "
+                   f"{self.engine.player.fighter.strength + 1})"
         )
         console.print(
             x=x + 1,
             y=6,
-            string=f"c) Agility (+1 defense, from {self.engine.player.fighter.max_hp})"
+            string=f"c) Constitution ({self.engine.player.fighter.constitution} > "
+                   f"{self.engine.player.fighter.constitution + 1})"
+        )
+        console.print(
+            x=x + 1,
+            y=7,
+            string=f"d) Agility ({self.engine.player.fighter.agility} > "
+                   f"{self.engine.player.fighter.agility + 1})"
+        )
+        console.print(
+            x=x + 1,
+            y=8,
+            string=f"e) Intelligence ({self.engine.player.fighter.intelligence} > "
+                   f"{self.engine.player.fighter.intelligence + 1})"
         )
 
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
@@ -252,13 +269,17 @@ class LevelUpEventHandler(AskUserEventHandler):
         key = event.sym
         index = key - tcod.event.K_a
 
-        if 0 <= index <= 2:
+        if 0 <= index <= 4:
             if index == 0:
                 player.level.increase_max_hp()
             elif index == 1:
-                player.level.increase_power()
+                player.level.increase_strength()
+            elif index == 2:
+                player.level.increase_constitution()
+            elif index == 3:
+                player.level.increase_agility()
             else:
-                player.level.increase_defense()
+                player.level.increase_intelligence()
         else:
             self.engine.message_log.add_message("Invalid entry", color.invalid)
 
@@ -452,6 +473,7 @@ class SingleRangedAttackHandler(SelectIndexHandler):
 
 class MainGameEventHandler(EventHandler):
     """Manages the main gameplay's events"""
+
     def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
         """Keys used for player inputs"""
         action: Optional[Action] = None
@@ -530,6 +552,7 @@ class AreaRangedAttackHandler(SelectIndexHandler):
 
 class GameOverEventHandler(EventHandler):
     """Manages what happens after a character is dead"""
+
     def on_quit(self) -> None:
         """Handle exiting out of a finished game"""
         if os.path.exists("savegame.sav"):

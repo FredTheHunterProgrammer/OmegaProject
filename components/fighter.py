@@ -35,7 +35,7 @@ class Fighter(BaseComponent):
             self.die()
 
     @property
-    def defense(self) -> int:
+    def constitution(self) -> int:
         """Character's defense"""
         return self.base_constitution + self.defense_bonus
 

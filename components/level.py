@@ -60,19 +60,29 @@ class Level(BaseComponent):
         """Increases your max health"""
         self.parent.fighter.max_hp += amount
         self.parent.fighter.hp += amount
-
         self.engine.message_log.add_message("Your health improves!")
-
         self.increase_level()
 
-    def increase_power(self, amount: int = 1) -> None:
+    def increase_strength(self, amount: int = 1) -> None:
         """Increases your base damage"""
-        self.parent.fighter.base_power += amount
+        self.parent.fighter.base_strength += amount
         self.engine.message_log.add_message("You feel stronger!")
+        self.increase_level()
 
-    def increase_defense(self, amount: int = 1) -> None:
+    def increase_constitution(self, amount: int = 1) -> None:
         """Increases your base defense"""
-        self.parent.fighter.base_defense += amount
-        self.engine.message_log.add_message("Your movements are getting swifter!")
+        self.parent.fighter.base_constitution += amount
+        self.engine.message_log.add_message("Your feel resilient!")
+        self.increase_level()
 
+    def increase_agility(self, amount: int = 1) -> None:
+        """Increases your base evasion"""
+        self.parent.fighter.base_agility += amount
+        self.engine.message_log.add_message("Your movements are getting swifter!")
+        self.increase_level()
+
+    def increase_intelligence(self, amount: int = 1) -> None:
+        """Increases your base intelligence"""
+        self.parent.fighter.base_intelligence += amount
+        self.engine.message_log.add_message("Your mind expands!")
         self.increase_level()
