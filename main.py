@@ -49,7 +49,7 @@ def main() -> None:
                     # Then print the error to the message log
                     if isinstance(handler, input_handlers.EventHandler):
                         handler.engine.message_log.add_message(
-                            traceback.format_exc(). color.error
+                            traceback.format_exc(), color.error
                         )
         except exceptions.QuitWithoutSaving:
             raise
