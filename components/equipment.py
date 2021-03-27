@@ -36,7 +36,20 @@ class Equipment(BaseComponent):
         return bonus
 
     @property
-    def power_bonus(self) -> int:
+    def evasion_bonus(self) -> int:
+        """Defense bonus given by the equipped item"""
+        bonus = 0
+
+        if self.weapon is not None and self.weapon.equippable is not None:
+            bonus += self.weapon.equippable.evasion_bonus
+
+        if self.armor is not None and self.armor.equippable is not None:
+            bonus += self.armor.equippable.evasion_bonus
+
+        return bonus
+
+    @property
+    def damage_bonus(self) -> int:
         """Attack bonus given by the equipped item"""
         bonus = 0
 

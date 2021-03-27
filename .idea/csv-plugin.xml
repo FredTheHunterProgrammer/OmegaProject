@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\components\fighter.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\copy.py">
           <value>
             <Attribute>
