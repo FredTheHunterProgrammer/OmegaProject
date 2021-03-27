@@ -40,9 +40,19 @@ class Fighter(BaseComponent):
         return self.base_constitution + self.defense_bonus
 
     @property
-    def power(self) -> int:
+    def strength(self) -> int:
         """Character's power"""
         return self.base_strength + self.damage_bonus
+
+    @property
+    def agility(self) -> int:
+        """Character's power"""
+        return self.base_agility + self.agility_bonus
+
+    @property
+    def intelligence(self) -> int:
+        """Character's power"""
+        return self.base_intelligence + self.intelligence_bonus
 
     @property
     def defense_bonus(self) -> int:
@@ -57,6 +67,22 @@ class Fighter(BaseComponent):
         """Character's bonus power given by equipment"""
         if self.parent.equipment:
             return self.parent.equipment.damage_bonus
+        else:
+            return 0
+
+    @property
+    def agility_bonus(self) -> int:
+        """Character's bonus power given by equipment"""
+        if self.parent.equipment:
+            return self.parent.equipment.evasion_bonus
+        else:
+            return 0
+
+    @property
+    def intelligence_bonus(self) -> int:
+        """Character's bonus power given by equipment"""
+        if self.parent.equipment:
+            return self.parent.equipment.intelligence_bonus
         else:
             return 0
 

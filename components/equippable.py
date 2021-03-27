@@ -18,25 +18,27 @@ class Equippable(BaseComponent):
             power_bonus: int = 0,
             defense_bonus: int = 0,
             evasion_bonus: int = 0,
+            intelligence_bonus: int = 0,
     ):
         self.equipment_type = equipment_type
         self.power_bonus = power_bonus
         self.defense_bonus = defense_bonus
         self.evasion_bonus = evasion_bonus
+        self.intelligence_bonus = intelligence_bonus
 
 
 class Dagger(Equippable):
     """Characteristics of an instance of a DAGGER weapon"""
 
     def __init__(self) -> None:
-        super().__init__(equipment_type=EquipmentType.LEFT_HAND, power_bonus=2)
+        super().__init__(equipment_type=EquipmentType.LEFT_HAND_WPN, power_bonus=2)
 
 
 class Sword(Equippable):
     """Characteristics of an instance of a SWORD weapon"""
 
     def __init__(self) -> None:
-        super().__init__(equipment_type=EquipmentType.RIGHT_HAND, power_bonus=4)
+        super().__init__(equipment_type=EquipmentType.RIGHT_HAND_WPN, power_bonus=4)
 
 
 class LeatherArmor(Equippable):

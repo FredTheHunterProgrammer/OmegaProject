@@ -198,8 +198,10 @@ class CharacterScreenEventHandler(AskUserEventHandler):
         console.print(x=x + 1, y=y + 3,
                       string=f"XP for next Level: {self.engine.player.level.experience_to_next_level}"
                       )
-        console.print(x=x + 1, y=y + 4, string=f"Attack: {self.engine.player.fighter.power}")
+        console.print(x=x + 1, y=y + 4, string=f"Attack: {self.engine.player.fighter.strength}")
         console.print(x=x + 1, y=y + 5, string=f"Defense: {self.engine.player.fighter.defense}")
+        console.print(x=x + 1, y=y + 5, string=f"Intelligence: {self.engine.player.fighter.intelligence}")
+        console.print(x=x + 1, y=y + 5, string=f"Agility: {self.engine.player.fighter.agility}")
 
 
 class LevelUpEventHandler(AskUserEventHandler):
@@ -228,7 +230,6 @@ class LevelUpEventHandler(AskUserEventHandler):
 
         console.print(x=x + 1, y=1, string="Congratulations! You leveled up!")
         console.print(x=x + 1, y=2, string="Select an attribute to increase")
-
         console.print(
             x=x + 1,
             y=4,
