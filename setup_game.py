@@ -15,7 +15,7 @@ from game_map import GameWorld
 import input_handlers
 
 # Load the background image and remove the alpha channel
-background_image = tcod.image.load("menu_background.png")[:, :, :3]
+background_image = tcod.image.load("TitleScreen.png")[:, :, :3]
 
 
 def new_game() -> Engine:
@@ -80,16 +80,20 @@ class MainMenu(input_handlers.BaseEventHandler):
         console.print(
             console.width // 2,
             console.height // 2 - 4,
-            "GAME NAME LOL :3",
+            "THE BODY COSMIC",
             fg=color.menu_title,
+            bg=color.black,
             alignment=tcod.CENTER,
+            bg_blend=tcod.BKGND_ALPHA(64),
         )
         console.print(
             console.width // 2,
             console.height - 2,
             "By FredTheHunter",
             fg=color.menu_title,
+            bg=color.black,
             alignment=tcod.CENTER,
+            bg_blend=tcod.BKGND_ALPHA(64),
         )
 
         menu_width = 24
