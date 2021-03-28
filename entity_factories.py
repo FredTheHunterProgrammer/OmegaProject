@@ -18,6 +18,7 @@ player = Actor(
     fighter=Fighter(hp=30, base_constitution=2, base_strength=5, base_agility=5, base_intelligence=4),
     inventory=Inventory(capacity=26),
     level=Level(level_up_base=200),
+    primary_mod=None
 )
 
 """Enemies"""
@@ -30,7 +31,8 @@ slime = Actor(
     equipment=Equipment(),
     fighter=Fighter(hp=10, base_constitution=0, base_strength=3, base_agility=2, base_intelligence=1),
     inventory=Inventory(capacity=0),
-    level=Level(xp_given=355)
+    level=Level(xp_given=355),
+    primary_mod=None
 )
 
 """Consumables"""

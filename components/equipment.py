@@ -18,10 +18,23 @@ class Equipment(BaseComponent):
     """Base class for equipments"""
     parent: Actor
 
-    def __init__(self, weapon: Optional[Item] = None, armor: Optional[Item] = None):
-        self.weapon = weapon
-        self.armor = armor
-
+    def __init__(self,
+                 left_hnd_wpn: Optional[Item] = None,
+                 right_hnd_wpn: Optional[Item] = None,
+                 body_armor: Optional[Item] = None,
+                 head_armor: Optional[Item] = None,
+                 gloves: Optional[Item] = None,
+                 boots: Optional[Item] = None,
+                 accessory: Optional[Item] = None,
+                 ):
+        self.left_hnd_wpn = left_hnd_wpn
+        self.right_hnd_wpn = right_hnd_wpn
+        self.head_armor = head_armor
+        self.body_armor = body_armor
+        self.gloves = gloves
+        self.boots = boots
+        self.accessory = accessory
+# TODO: Modify useless equipment names and add others that are missing
     @property
     def defense_bonus(self) -> int:
         """Defense bonus given by the equipped item"""
