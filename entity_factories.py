@@ -46,50 +46,85 @@ health_potion = Item(
     color=(127, 0, 255),
     name="Healing Potion",
     consumable=consumable.HealingConsumable(amount=4),
+    inscription_slots=1,
+    inscription_slot1=None,
+    inscription_slot2=None,
 )
 
 # Inscribers
 """Inscribers are items that you can equip to a piece of equipment to make it better"""
 
-# Inscriptions
-"""Like regular roguelike scrolls, but with a fancier word. Usually inscribed on a small plate of hard material."""
+# Plates
+"""Like regular roguelike scrolls. Usually inscribed on a small plate of hard material."""
 
-lightning_insc = Item(
+lightning_plate = Item(
     char="?",
     color=(255, 255, 0),
     name="Lightning Scroll",
     consumable=consumable.LightningDamageConsumable(damage=20, maximum_range=5),
+    inscription_slots=1,
+    inscription_slot1=None,
+    inscription_slot2=None
 )
 
-confusion_insc = Item(
+confusion_plate = Item(
     char="?",
     color=(207, 63, 255),
     name="Confusion Scroll",
     consumable=consumable.ConfusionConsumable(number_of_turns=10),
+    inscription_slots=1,
+    inscription_slot1=None,
+    inscription_slot2=None
 )
 
-fireball_insc = Item(
+fireball_plate = Item(
     char="?",
     color=(255, 0, 0),
     name="Fireball Scroll",
     consumable=consumable.FireballDamageConsumable(damage=12, radius=3),
+    inscription_slots=1,
+    inscription_slot1=None,
+    inscription_slot2=None
 )
 
 """Equipment"""
 
 dagger = Item(
-    char="/", color=(0, 191, 255), name="Dagger", equippable=equippable.Dagger()
+    char="/",
+    color=(0, 191, 255),
+    name="Dagger",
+    equippable=equippable.Dagger(),
+    inscription_slots=1,
+    inscription_slot1=None,
+    inscription_slot2=None
 )
 
-sword = Item(char="/", color=(0, 191, 255), name="Sword", equippable=equippable.Sword())
+sword = Item(
+    char="/",
+    color=(0, 191, 255),
+    name="Sword",
+    equippable=equippable.Sword(),
+    inscription_slots=1,
+    inscription_slot1=None,
+    inscription_slot2=None
+)
 
 leather_armor = Item(
     char="[",
     color=(139, 69, 19),
     name="Leather Armor",
     equippable=equippable.LeatherArmor(),
+    inscription_slots=1,
+    inscription_slot1=None,
+    inscription_slot2=None
 )
 
 chain_mail = Item(
-    char="[", color=(139, 69, 19), name="Chain Mail", equippable=equippable.ChainMail()
+    char="[",
+    color=(139, 69, 19),
+    name="Chain Mail",
+    equippable=equippable.ChainMail(),
+    inscription_slots=1,
+    inscription_slot1=None,
+    inscription_slot2=None
 )

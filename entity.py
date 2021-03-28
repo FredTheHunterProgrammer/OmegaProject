@@ -33,15 +33,15 @@ class Entity:
     parent: Union[GameMap, Inventory]
 
     def __init__(
-        self,
-        parent: Optional[GameMap] = None,
-        x: int = 0,
-        y: int = 0,
-        char: str = "?",
-        color: Tuple[int, int, int] = (255, 255, 255),
-        name: str = "<Unnamed>",
-        blocks_movement: bool = False,
-        render_order: RenderOrder = RenderOrder.CORPSE,
+            self,
+            parent: Optional[GameMap] = None,
+            x: int = 0,
+            y: int = 0,
+            char: str = "?",
+            color: Tuple[int, int, int] = (255, 255, 255),
+            name: str = "<Unnamed>",
+            blocks_movement: bool = False,
+            render_order: RenderOrder = RenderOrder.CORPSE,
     ):
         self.x = x
         self.y = y
@@ -92,19 +92,20 @@ class Entity:
 
 class Actor(Entity):
     """Base class defining any player/enemy"""
+
     def __init__(
-        self,
-        *,
-        x: int = 0,
-        y: int = 0,
-        char: str = "?",
-        color: Tuple[int, int, int] = (255, 255, 255),
-        name: str = "<Unnamed>",
-        ai_cls: Type[BaseAI],
-        equipment: Equipment,
-        fighter: Fighter,
-        inventory: Inventory,
-        level: Level,
+            self,
+            *,
+            x: int = 0,
+            y: int = 0,
+            char: str = "?",
+            color: Tuple[int, int, int] = (255, 255, 255),
+            name: str = "<Unnamed>",
+            ai_cls: Type[BaseAI],
+            equipment: Equipment,
+            fighter: Fighter,
+            inventory: Inventory,
+            level: Level,
     ):
         super().__init__(
             x=x,
@@ -138,16 +139,20 @@ class Actor(Entity):
 
 class Item(Entity):
     """Base class defining any items"""
+
     def __init__(
-        self,
-        *,
-        x: int = 0,
-        y: int = 0,
-        char: str = "?",
-        color: Tuple[int, int, int] = (255, 255, 255),
-        name: str = "<Unnamed>",
-        consumable: Optional[Consumable] = None,
-        equippable: Optional[Equippable] = None,
+            self,
+            *,
+            x: int = 0,
+            y: int = 0,
+            char: str = "?",
+            color: Tuple[int, int, int] = (255, 255, 255),
+            name: str = "<Unnamed>",
+            consumable: Optional[Consumable] = None,
+            equippable: Optional[Equippable] = None,
+            inscription_slots: int,
+            inscription_slot1: str,
+            inscription_slot2: str
     ):
         super().__init__(
             x=x,
@@ -168,3 +173,7 @@ class Item(Entity):
 
         if self.equippable:
             self.equippable.parent = self
+
+        self.inscription_slots = inscription_slots
+        self.inscription_slot1 = inscription_slot1
+        self.inscription_slot2 = inscription_slot2

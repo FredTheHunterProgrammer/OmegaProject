@@ -12,6 +12,7 @@ import actions
 import color
 import components.inventory
 import components.ai
+from components.modifiers import ModifierFx
 from components.base_component import BaseComponent
 from exceptions import Impossible
 from input_handlers import (
@@ -166,3 +167,14 @@ class HealingConsumable(Consumable):
             self.consume()
         else:
             raise Impossible(f"Your health is already full.")
+
+
+class InscriberConsumable(Consumable):
+    """Class for all inscribers"""
+    def __init__(self, effect: ModifierFx):
+        self.effect = effect
+
+    def activate(self, action: actions.ItemAction) -> None:
+        """Activation of the inscriber"""
+        consumer = action.entity
+        item_affected = action.item
