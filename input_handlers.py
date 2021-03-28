@@ -204,7 +204,6 @@ class CharacterScreenEventHandler(AskUserEventHandler):
         console.print(x=x + 1, y=y + 7, string=f"Intelligence: {self.engine.player.fighter.intelligence}")
 
 
-
 class LevelUpEventHandler(AskUserEventHandler):
     """Class for the screen showing when a character levels up"""
     TITLE = "Level Up"

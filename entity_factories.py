@@ -48,8 +48,8 @@ health_potion = Item(
     consumable=consumable.HealingConsumable(amount=4),
 )
 
-# Syringes
-"""Syringes are items that the player can use on himself or a nearby enemy to apply a temporary effect."""
+# Inscribers
+"""Inscribers are items that you can equip to a piece of equipment to make it better"""
 
 # Inscriptions
 """Like regular roguelike scrolls, but with a fancier word. Usually inscribed on a small plate of hard material."""
