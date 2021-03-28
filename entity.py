@@ -101,6 +101,7 @@ class Actor(Entity):
             char: str = "?",
             color: Tuple[int, int, int] = (255, 255, 255),
             name: str = "<Unnamed>",
+            primary_mod: Modifier_Fx,
             ai_cls: Type[BaseAI],
             equipment: Equipment,
             fighter: Fighter,

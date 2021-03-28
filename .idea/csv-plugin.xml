@@ -38,6 +38,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\components\modifiers.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\copy.py">
           <value>
             <Attribute>

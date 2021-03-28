@@ -396,6 +396,87 @@ class InventoryDropHandler(InventoryEventHandler):
         return actions.DropItem(self.engine.player, item)
 
 
+class EquipmentScreenEventHandler(AskUserEventHandler):
+    """This handler lets the user see all currently equipped items, and in which slots
+
+    What happens then depends on the subclass.
+    """
+
+    TITLE = "Equipments"
+
+    def on_render(self, console: tcod.Console) -> None:
+        """Render an inventory menu, which displays the items in the inventory, and the letter to select them.
+        Will move to a different position based on where the player is located, so the player can always see where
+        they are.
+        """
+        super().on_render(console)
+        number_of_items_in_inventory = len(self.engine.player.inventory.items)
+
+        height = number_of_items_in_inventory + 2
+
+        if height <= 3:
+            height = 3
+
+        if self.engine.player.x <= 30:
+            x = 40
+        else:
+            x = 0
+
+        y = 0
+
+        width = len(self.TITLE) + 28
+
+        console.draw_frame(
+            x=x,
+            y=y,
+            width=width,
+            height=height,
+            title=self.TITLE,
+            clear=True,
+            fg=(255, 255, 255),
+            bg=(0, 0, 0),
+        )
+
+        if number_of_items_in_inventory > 0:
+            for i, item in enumerate(self.engine.player.inventory.items):
+                is_equipped = self.engine.player.equipment.item_is_equipped(item)
+                if item.equippable.equipment_type == item.equippable.equipment_type.LEFT_HAND_WPN:
+                    item_slot = "Left-hand item"
+                elif item.equippable.equipment_type == item.equippable.equipment_type.RIGHT_HAND_WPN:
+                    item_slot = "Right-hand item"
+                elif item.equippable.equipment_type == item.equippable.equipment_type.HEAD_ARMOR:
+                    item_slot = "Head"
+                elif item.equippable.equipment_type == item.equippable.equipment_type.BODY_ARMOR:
+                    item_slot = "Body"
+                elif item.equippable.equipment_type == item.equippable.equipment_type.GLOVES:
+                    item_slot = "Hands"
+                elif item.equippable.equipment_type == item.equippable.equipment_type.BOOTS:
+                    item_slot = "Feet"
+                else:
+                    item_slot = "Accesory"
+
+                if is_equipped:
+                    item_string = f"[{item_slot}] -> {item.name}"
+                    console.print(x + 1, y + i + 1, item_string)
+        else:
+            console.print(x + 1, y + 1, "(Empty)")
+
+    def ev_keydown(self, event: tcod.event.KeyDown) -> Optional[ActionOrHandler]:
+        """Checks if the input is valid"""
+        player = self.engine.player
+        key = event.sym
+        index = key - tcod.event.K_a
+
+        if 0 <= index <= 26:
+            try:
+                selected_item = player.inventory.items[index]
+            except IndexError:
+                self.engine.message_log.add_message("Invalid entry.", color.invalid)
+                return None
+            return self.on_item_selected(selected_item)
+        return super().ev_keydown(event)
+
+
 class SelectIndexHandler(AskUserEventHandler):
     """Handles asking the user for an index on the map."""
 
@@ -499,7 +580,8 @@ class MainGameEventHandler(EventHandler):
 
         elif key == tcod.event.K_g:
             action = PickupAction(player)
-
+        elif key == tcod.event.K_e:
+            return EquipmentScreenEventHandler(self.engine)
         elif key == tcod.event.K_i:
             return InventoryActivateHandler(self.engine)
         elif key == tcod.event.K_d:

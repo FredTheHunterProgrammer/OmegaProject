@@ -12,6 +12,19 @@ if TYPE_CHECKING:
 
 class ModifierFx(BaseComponent):
     """Base class for modifier effects"""
-    def __init__(self, inscribed_on: EquipmentType, rarity: Rarity):
-        self.inscribed_on = inscribed_on,
+    def __init__(self, rarity: Rarity):
         self.rarity = rarity
+
+
+class EnemyModifierFx(ModifierFx):
+    """Class for basic enemy modifiers. TODO: Start with secondary mods"""
+    def __init__(self, rarity: Rarity, enemy: Actor):
+        super().__init__(rarity)
+        self.enemy = enemy
+
+
+class ItemsModifierFx(ModifierFx):
+    """Class for basic item modifiers"""
+    def __init__(self, rarity: Rarity, item: Item):
+        super().__init__(rarity)
+        self.item = item
