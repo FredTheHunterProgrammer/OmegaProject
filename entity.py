@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from components.fighter import Fighter
     from components.inventory import Inventory
     from components.level import Level
+    from components.modifiers import ModifierFx
     from game_map import GameMap
 
 T = TypeVar("T", bound="Entity")
@@ -101,7 +102,7 @@ class Actor(Entity):
             char: str = "?",
             color: Tuple[int, int, int] = (255, 255, 255),
             name: str = "<Unnamed>",
-            primary_mod: Modifier_Fx,
+            primary_mod: ModifierFx,
             ai_cls: Type[BaseAI],
             equipment: Equipment,
             fighter: Fighter,
@@ -119,6 +120,8 @@ class Actor(Entity):
         )
 
         self.ai: Optional[BaseAI] = ai_cls(self)
+
+        self.primary_mod = primary_mod
 
         self.fighter = fighter
         self.fighter.parent = self

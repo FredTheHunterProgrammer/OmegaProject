@@ -35,16 +35,17 @@ class Equipment(BaseComponent):
         self.boots = boots
         self.accessory = accessory
 # TODO: Modify useless equipment names and add others that are missing
+
     @property
     def defense_bonus(self) -> int:
         """Defense bonus given by the equipped item"""
         bonus = 0
 
-        if self.weapon is not None and self.weapon.equippable is not None:
-            bonus += self.weapon.equippable.defense_bonus
+        if self.left_hnd_wpn is not None and self.left_hnd_wpn.equippable is not None:
+            bonus += self.left_hnd_wpn.equippable.defense_bonus
 
-        if self.armor is not None and self.armor.equippable is not None:
-            bonus += self.armor.equippable.defense_bonus
+        if self.body_armor is not None and self.body_armor.equippable is not None:
+            bonus += self.body_armor.equippable.defense_bonus
 
         return bonus
 
@@ -53,11 +54,11 @@ class Equipment(BaseComponent):
         """Defense bonus given by the equipped item"""
         bonus = 0
 
-        if self.weapon is not None and self.weapon.equippable is not None:
-            bonus += self.weapon.equippable.evasion_bonus
+        if self.left_hnd_wpn is not None and self.left_hnd_wpn.equippable is not None:
+            bonus += self.left_hnd_wpn.equippable.evasion_bonus
 
-        if self.armor is not None and self.armor.equippable is not None:
-            bonus += self.armor.equippable.evasion_bonus
+        if self.body_armor is not None and self.body_armor.equippable is not None:
+            bonus += self.body_armor.equippable.evasion_bonus
 
         return bonus
 
@@ -66,11 +67,11 @@ class Equipment(BaseComponent):
         """Defense bonus given by the equipped item"""
         bonus = 0
 
-        if self.weapon is not None and self.weapon.equippable is not None:
-            bonus += self.weapon.equippable.intelligence_bonus
+        if self.left_hnd_wpn is not None and self.left_hnd_wpn.equippable is not None:
+            bonus += self.left_hnd_wpn.equippable.intelligence_bonus
 
-        if self.armor is not None and self.armor.equippable is not None:
-            bonus += self.armor.equippable.intelligence_bonus
+        if self.body_armor is not None and self.body_armor.equippable is not None:
+            bonus += self.body_armor.equippable.intelligence_bonus
 
         return bonus
 
@@ -79,17 +80,17 @@ class Equipment(BaseComponent):
         """Attack bonus given by the equipped item"""
         bonus = 0
 
-        if self.weapon is not None and self.weapon.equippable is not None:
-            bonus += self.weapon.equippable.power_bonus
+        if self.left_hnd_wpn is not None and self.left_hnd_wpn.equippable is not None:
+            bonus += self.left_hnd_wpn.equippable.power_bonus
 
-        if self.armor is not None and self.armor.equippable is not None:
-            bonus += self.armor.equippable.power_bonus
+        if self.body_armor is not None and self.body_armor.equippable is not None:
+            bonus += self.body_armor.equippable.power_bonus
 
         return bonus
 
     def item_is_equipped(self, item: Item) -> bool:
         """Returns if the item is equipped or not"""
-        return self.weapon == item or self.armor == item
+        return self.left_hnd_wpn == item or self.body_armor == item
 
     def unequip_message(self, item_name: str) -> None:
         """Message to show when you remove an item"""
@@ -131,9 +132,9 @@ class Equipment(BaseComponent):
                 and equippable_item.equippable.equipment_type == EquipmentType.LEFT_HAND_WPN
                 or equippable_item.equippable.equipment_type == EquipmentType.RIGHT_HAND_WPN
         ):
-            slot = "weapon"
+            slot = "left_hnd_wpn"
         else:
-            slot = "armor"
+            slot = "body_armor"
 
         if getattr(self, slot) == equippable_item:
             self.unequip_from_slot(slot, add_message)
